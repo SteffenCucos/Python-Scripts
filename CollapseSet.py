@@ -8,7 +8,6 @@ def collapse(a):
     s = []
 
     while len(a) > 0:
-
     #find the most repeated element
         d = {}
         for e in a:
@@ -16,14 +15,27 @@ def collapse(a):
                 d[n] = d.get(n,0) + 1
         m = 0
         n = None
-        print(d)
-        for e in list(d.keys()):
-            if d[e] > m:
-                m = d[e]
-                n = e
+        for k in list(d.keys()):
+            if d[k] > m:
+                m = d[k]
+                n = k
         #n is now the most repeated element
-        print(n,m)
-        return
+        #now group by n
+        ap = []
+        l = [n]
+        i = []
+        for e in a:
+            if n in e:
+                for p in e:
+                    if p != n:
+                       i.append(p)
+            else:
+                ap.append(e)
+        l.append(i)
+        s.append(l)
+        a = ap
+
+    print(s)
                 
                 
                 
