@@ -1,11 +1,12 @@
 
 import random_slice as randslice
+    
 
 
 
 def collapse_object(a,n):
     '''
-    a is an array of sub arrays, which all have length n
+    a is a 2d array of members
 
     returns another 2d arrays of the same objects built
     by grouping together similar object sub arrays.
@@ -28,9 +29,11 @@ def collapse_object(a,n):
     There are other cases where better results can be achieved
     with even more passes.
 
+
+    returns a list of lists of members
     '''
     s = []
-    if a == []:#if a is empty return an empty array
+    if a == [] or a == [[]]:#if a is empty return an empty array
         return []
     if n == 0:# if n is 0 then there are no dimensions
         return []
@@ -38,35 +41,32 @@ def collapse_object(a,n):
         L = []
         for row in a:
             L.append(row[0])#row[0] works because there is only one element per row according to n
-        if len(L) > 1:
-            #return[L]
+        if len(L) > 1:#if there are multiple members, we need to create a new member whose value is the list of member values
             dim = L[0].dimension
             l = []
             for i in L:
                 l.append(str(i))
-            return [member(l,dim)]
+            return [[member(l,dim)]]
         else:
-            return L
+            return [L]
     
     most = most_repeated(a)
-
     s[:] = (row.copy() for row in a if most in row)
-    a[:] = (row for row in a if most not in row)
     for row in s:
         row.remove(most)
+
+    a[:] = (row for row in a if most not in row)
     #s now contains all entries with most
     #a now contains all entries withoud most
     final = []
     sub = collapse_object(s,n-1)
     rest = collapse_object(a,n)
     for row in sub:
-        if n > 2:
-                r = [most]
-                for e in row:
-                    r.append(e)
-                final.append(r)
-        else:
-            final.append([most,row])
+        r = [most]
+        for e in row:
+            r.append(e)
+        final.append(r)
+
     for row in rest:
         final.append(row)
     return final
@@ -87,8 +87,6 @@ def most_repeated(a):
 
         returns the most repeated object in a
         '''
-        global m
-        m+=1
         d = {}
         for e in a:
             for n in e:
@@ -166,13 +164,7 @@ def objectify(a,n):
         objects.append(obj)
     return objects
 
-def collapse_file(s):
-    file = open(s,"r")
-    a = eval(file.read())
-    results = collapse(a)
-    print(len(a),"->",results[1])
-    outFile = open("testfileOut.txt","w")
-    outFile.write(str(results[2]))
+
 
 
 def collapse(a):
@@ -204,8 +196,7 @@ def print_wide_array(a,w):
         
 
 if __name__ == "__main__":
-    global m
-    m = 0
+
     d1 = ["Steffen","Alex","Robert","Micheal","Anna","Carah","Max","Janice"]
     d2 = ["Payable","Receivable","Actual","Forecast"]
     d3 = ["CS","MAT","PHY","ART","ENG","CCT"]
@@ -218,15 +209,15 @@ if __name__ == "__main__":
     d10 = ["Save","Choose","Refresh","Cascade","Drill Transaction","Drill Save","Lids- add","Lids-remove","Lids-select","Lids-move","Log out"]
     d11 = ["Central","Standalone","Hybrid","xlsx","xlsm","xlsb"]
     #a = [d1,d2,d3,d4,d5,d6,d7,d8,d9,d10,d11]
-    r1 = [str(i) for i in range(100)]
-    r2 = [str(i) for i in range(100,200)]
-    r3 = [str(i) for i in range(200,300)]
-    a = [r1,r2,r3]
+    #a = [d2,d3,d5,d6,d7,d8,d9,d11]
+    #a = [d1,d2,d3,d4]
+    #a = [d10,d4]
+    a = [d1,d2,d3,d4,d5,d6]
     n = len(a)
     s = 0
     sl = 0
-    x = 0
-    iterr = 2000
+    x = 1
+    iterr = 3000
     maxslice = []
     minresults = [None] * (iterr + 1)
     
@@ -240,7 +231,7 @@ if __name__ == "__main__":
             minresults = result[2]
             maxslice = slices
         print("LEN =:",len(slices),"REDUCED =:",result[1],"REQUIRED =:",result[0])
-    print("m = ",m)
+        
     #print(s/x)
     #print(sl/x)
     #print("Biggest Difference Original")
